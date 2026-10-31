@@ -1,0 +1,31 @@
+<?php
+require 'config.php';
+$category=$category??'CPU'; $defs=spec_definitions()[$category]; $page_title=$category.' components'; $active_page=''; require 'header.php';
+if(!isset($db)){require 'footer.php';exit;}
+    $table=$defs['table']; $join=$table?" LEFT JOIN `$table` s ON s.component_id=c.component_id":'';
+    $where=['c.type = ?','c.is_active = 1']; $types='s'; $values=[$category];
+    $brands=fetch_rows($db,'SELECT DISTINCT brand FROM components WHERE type=? AND is_active=1 ORDER BY brand','s',[$category]);
+    $allBrands=array_column($brands,'brand'); $chosen=$_GET['brand']??$allBrands; 
+    if(!is_array($chosen))$chosen=[]; $chosen=array_values(array_intersect($allBrands,array_map('strval',$chosen)));
+if(count($chosen)<count($allBrands)){if(!$chosen){$where[]='1=0';}
+    else{$where[]='c.brand IN ('.implode(',',array_fill(0,count($chosen),'?')).')';$types.=str_repeat('s',count($chosen));array_push($values,...$chosen);}}
+    foreach($defs['filters'] as $field=>$meta){if($meta[1]==='select'&&!empty($_GET[$field])){$where[]="s.`$field` = ?";$types.='s';$values[]=(string)$_GET[$field];}if($meta[1]==='range'&&isset($_GET['min_'.$field])&&is_numeric($_GET['min_'.$field])&&(float)$_GET['min_'.$field]>0){$where[]="s.`$field` >= ?";$types.='d';$values[]=(float)$_GET['min_'.$field];}}
+if(isset($_GET['max_price'])&&is_numeric($_GET['max_price'])){$where[]='c.price <= ?';$types.='d';$values[]=(float)$_GET['max_price'];}
+
+    $order=($_GET['sort']??'')==='low'?'c.price ASC':((($_GET['sort']??'')==='high')?'c.price DESC':'c.brand ASC,c.name ASC');
+    $select='c.component_id,c.type,c.brand,c.name,c.price,c.image_url'; if($table)foreach(array_keys($defs['labels']) as $field)$select.=", s.`$field`";
+    $items=fetch_rows($db,"SELECT $select FROM components c$join WHERE ".implode(' AND ',$where)." ORDER BY $order",$types,$values);
+    $options=[];foreach($defs['filters'] as $field=>$meta)if($meta[1]==='select')$options[$field]=fetch_rows($db,"SELECT DISTINCT s.`$field` AS value FROM `$table` s JOIN components c ON c.component_id=s.component_id WHERE c.type=? AND c.is_active=1 ORDER BY value",'s',[$category]);
+?>
+
+<div class="layout"><aside class="sidebar"><div class="eyebrow" style="padding:5px 9px">Categories</div>
+<nav><?php foreach(categories() as $name=>$url): ?><a class="<?= $name===$category?'active':'' ?>" href="<?= e($url) ?>"><?= e($name) ?></a>
+    <?php endforeach; ?></nav></aside><section><div class="catalog-head"><div><div class="eyebrow">Components / <?= e($category) ?></div><h1><?= e($category) ?></h1><p>Filters and specifications are read from the existing <?= e($table??'components') ?> table.</p></div><a class="button small" href="builder.php">Current build (<?= count($_SESSION['build']??[]) ?>)</a></div>
+<form class="filter-box" method="get"><div class="filters"><div class="filter"><label>Brand</label><div class="brand-checks"><?php foreach($allBrands as $brand): ?><label><input type="checkbox" name="brand[]" value="<?= e($brand) ?>" <?= in_array($brand,$chosen,true)?'checked':'' ?>> <?= e($brand) ?></label><?php endforeach; ?></div></div>
+<?php foreach($defs['filters'] as $field=>$meta): [$label,$kind]=$meta; if($kind==='select'): ?><div class="filter"><label for="f_<?= e($field) ?>"><?= e($label) ?></label><select id="f_<?= e($field) ?>" name="<?= e($field) ?>"><option value="">Any</option><?php foreach($options[$field] as $option): ?><option value="<?= e($option['value']) ?>" <?= (($_GET[$field]??'')===$option['value'])?'selected':'' ?>><?= e($option['value']) ?></option><?php endforeach; ?></select></div><?php else: $max=(float)(fetch_rows($db,"SELECT MAX(s.`$field`) AS m FROM `$table` s JOIN components c ON c.component_id=s.component_id WHERE c.type=? AND c.is_active=1",'s',[$category])[0]['m']??100); $max=max($max,1); $value=isset($_GET['min_'.$field])&&is_numeric($_GET['min_'.$field])?(float)$_GET['min_'.$field]:0; $step=str_contains($field,'clock')?'0.1':($max>100?5:1); ?><div class="filter"><label for="f_<?= e($field) ?>"><?= e($label) ?><span class="range-value" id="v_<?= e($field) ?>"><?= e($value) ?></span></label><input type="range" id="f_<?= e($field) ?>" name="min_<?= e($field) ?>" min="0" max="<?= e($max) ?>" step="<?= e($step) ?>" value="<?= e(min($value,$max)) ?>" oninput="document.getElementById('v_<?= e($field) ?>').textContent=this.value"></div><?php endif; endforeach; ?>
+<div class="filter"><label for="max_price">Maximum price (€)</label><input type="number" id="max_price" name="max_price" min="0" step="10" value="<?= e($_GET['max_price']??'') ?>" placeholder="Any"></div><div class="filter"><label for="sort">Sort results</label><select id="sort" name="sort"><option value="">Recommended</option><option value="low" <?= ($_GET['sort']??'')==='low'?'selected':'' ?>>Price: low to high</option><option value="high" <?= ($_GET['sort']??'')==='high'?'selected':'' ?>>Price: high to low</option></select></div></div><div class="filter-actions"><button class="primary" type="submit">Apply filters</button><a href="<?= e(basename($_SERVER['PHP_SELF'])) ?>">Reset filters</a></div></form>
+<div class="results"><strong><?= e($category) ?> options</strong><span><?= count($items) ?> result<?= count($items)===1?'':'s' ?></span></div><div class="product-grid"><?php if(!$items): ?><div class="empty">No components match. Try changing the filters<?= !$allBrands?' or run the sample catalog loader first':'' ?>.</div><?php endif; ?><?php foreach($items as $item): ?><article class="product"><div><h3><?= e($item['brand'].' '.$item['name']) ?></h3><p><?= e($item['type']) ?> · <span class="specs"><?php $specText=[];foreach($defs['labels'] as $field=>$label)if(isset($item[$field]))$specText[]=$label.': '.$item[$field];echo e(implode(' · ',$specText)?:'General component listing'); ?></span></p></div><div class="price"><?= euro($item['price']) ?><form method="post" action="builder.php"><input type="hidden" name="component_id" value="<?= (int)$item['component_id'] ?>"><button class="primary" type="submit">Add to build</button></form></div></article><?php endforeach; ?></div>
+<?php if($category==='Case'): ?>
+    <?php endif; ?></section></div>
+<script>document.querySelectorAll('input[type=range]').forEach(x=>x.dispatchEvent(new Event('input')))</script>
+<?php require 'footer.php'; ?>
