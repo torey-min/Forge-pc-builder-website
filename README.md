@@ -172,11 +172,5 @@ The project is being developed incrementally, with the aim of implementing the c
 
 **Min Kyaw**
 
-Interested in web development, creative design, PC building, gaming technology, and digital experiences.
-
-- GitHub: [Your GitHub Profile](YOUR_GITHUB_PROFILE_URL)
-- Project Repository: [Forge PC Builder](YOUR_REPOSITORY_URL)
-
 ---
 
-*Forge PC Builder — Design your setup. Choose your components. Build your machine.* ⚡
