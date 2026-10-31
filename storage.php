@@ -1,1 +1,4 @@
-<?php $category='Storage'; require 'category_page.php'; ?>
+<?php
+$category = 'Storage';
+require 'category_page.php';
+?>

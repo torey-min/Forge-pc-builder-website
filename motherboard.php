@@ -1,1 +1,4 @@
-<?php $category='Motherboard'; require 'category_page.php'; ?>
+<?php
+$category = 'Motherboard';
+require 'category_page.php';
+?>

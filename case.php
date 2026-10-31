@@ -1,1 +1,4 @@
-<?php $category='Case'; require 'category_page.php'; ?>
+<?php
+$category = 'Case';
+require 'category_page.php';
+?>

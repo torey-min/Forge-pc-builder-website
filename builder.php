@@ -1,9 +1,115 @@
 <?php
 require 'config.php';
-if($_SERVER['REQUEST_METHOD']==='POST'&&isset($_POST['component_id'])&&isset($db)){$id=(int)$_POST['component_id'];$rows=fetch_rows($db,'SELECT component_id,type FROM components WHERE component_id=? AND is_active=1','i',[$id]);if($rows){$_SESSION['build'][$rows[0]['type']]=$id;$_SESSION['flash']='Part added to your current build.';}header('Location: builder.php');exit;}
-if($_SERVER['REQUEST_METHOD']==='POST'&&isset($_POST['remove'])){foreach($_SESSION['build']??[] as $type=>$id)if((int)$id===(int)$_POST['remove'])unset($_SESSION['build'][$type]);header('Location: builder.php');exit;}
-$page_title='Current build';$active_page='builder';require 'header.php';if(!isset($db)){require 'footer.php';exit;}$parts=selected_build_rows($db);$total=array_sum(array_column($parts,'price'));
+
+// Add a chosen component to the current session build.
+if (
+    $_SERVER['REQUEST_METHOD'] === 'POST'
+    && isset($_POST['component_id'])
+    && isset($db)
+) {
+    $componentId = (int) $_POST['component_id'];
+    $components = fetch_rows(
+        $db,
+        'SELECT component_id, type FROM components WHERE component_id = ? AND is_active = 1',
+        'i',
+        [$componentId]
+    );
+
+    if ($components) {
+        $type = $components[0]['type'];
+        $_SESSION['build'][$type] = $componentId;
+        $_SESSION['flash'] = 'Part added to your current build.';
+    }
+
+    header('Location: builder.php');
+    exit;
+}
+
+// Remove a chosen component from the current session build.
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove'])) {
+    foreach ($_SESSION['build'] ?? [] as $type => $componentId) {
+        if ((int) $componentId === (int) $_POST['remove']) {
+            unset($_SESSION['build'][$type]);
+        }
+    }
+
+    header('Location: builder.php');
+    exit;
+}
+
+$page_title = 'Current build';
+$active_page = 'builder';
+require 'header.php';
+
+if (!isset($db)) {
+    require 'footer.php';
+    exit;
+}
+
+$parts = selected_build_rows($db);
+$total = array_sum(array_column($parts, 'price'));
 ?>
-<div class="eyebrow">Build workspace</div><h1>Your current build</h1><p>Choose one component from each category.</p><?php if(!empty($_SESSION['flash'])): ?><div class="alert success"><?= e($_SESSION['flash']);unset($_SESSION['flash']); ?></div><?php endif; ?><section class="panel"><?php if(!$parts): ?><div class="empty">Your build is empty. Pick a category to begin.</div><?php else: ?><table class="table"><thead><tr><th>Category</th><th>Component</th><th>Price</th><th></th></tr></thead><tbody><?php foreach($parts as $part): ?><tr><td><?= e($part['type']) ?></td><td><?= e($part['brand'].' '.$part['name']) ?></td><td><?= euro($part['price']) ?></td><td><form method="post" class="inline"><input type="hidden" name="remove" value="<?= (int)$part['component_id'] ?>"><button class="remove">Remove</button></form></td></tr><?php endforeach; ?></tbody></table><?php endif; ?><p><strong>Total: <?= euro($total) ?></strong></p><div class="tiles" style="grid-template-columns:repeat(4,1fr)"><?php foreach(categories() as $name=>$url): ?><a class="tile" href="<?= e($url) ?>"><strong><?= e($name) ?> →</strong></a><?php endforeach; ?></div>
-<?php if($parts): ?><form method="post" action="save_build.php" style="margin-top:18px"><label>Build name <input name="name" required maxlength="120" placeholder="e.g. 1440p Gaming PC"></label><?php if(empty($_SESSION['user_id'])): ?><p class="note">To save builds to your account, <a href="login.php" style="color:var(--blue)">log in</a> or <a href="register.php" style="color:var(--blue)">create an account</a>.</p><?php endif; ?><button class="primary" type="submit" <?= empty($_SESSION['user_id'])?'disabled':'' ?>>Save build to My Builds</button></form><?php endif; ?></section>
+<div class="eyebrow">Build workspace</div>
+<h1>Your current build</h1>
+<p>Choose one component from each category. Your choices stay in this browser session.</p>
+
+<?php if (!empty($_SESSION['flash'])): ?>
+    <div class="alert success">
+        <?= e($_SESSION['flash']) ?>
+        <?php unset($_SESSION['flash']); ?>
+    </div>
+<?php endif; ?>
+
+<section class="panel">
+    <?php if (!$parts): ?>
+        <div class="empty">Your build is empty. Pick a category to begin.</div>
+    <?php else: ?>
+        <table class="table">
+            <thead>
+                <tr><th>Category</th><th>Component</th><th>Price</th><th></th></tr>
+            </thead>
+            <tbody>
+                <?php foreach ($parts as $part): ?>
+                    <tr>
+                        <td><?= e($part['type']) ?></td>
+                        <td><?= e($part['brand'] . ' ' . $part['name']) ?></td>
+                        <td><?= euro($part['price']) ?></td>
+                        <td>
+                            <form method="post" class="inline">
+                                <input type="hidden" name="remove" value="<?= (int) $part['component_id'] ?>">
+                                <button class="remove" type="submit">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    <?php endif; ?>
+
+    <p><strong>Total: <?= euro($total) ?></strong></p>
+
+    <div class="tiles" style="grid-template-columns:repeat(4,1fr)">
+        <?php foreach (categories() as $name => $url): ?>
+            <a class="tile" href="<?= e($url) ?>"><strong><?= e($name) ?> →</strong></a>
+        <?php endforeach; ?>
+    </div>
+
+    <?php if ($parts): ?>
+        <form method="post" action="save_build.php" style="margin-top:18px">
+            <label>Build name
+                <input name="name" required maxlength="120" placeholder="e.g. 1440p Gaming PC">
+            </label>
+            <?php if (empty($_SESSION['user_id'])): ?>
+                <p class="note">
+                    To save builds to your account,
+                    <a href="login.php" style="color:var(--blue)">log in</a> or
+                    <a href="register.php" style="color:var(--blue)">create an account</a>.
+                </p>
+            <?php endif; ?>
+            <button class="primary" type="submit" <?= empty($_SESSION['user_id']) ? 'disabled' : '' ?>>
+                Save build to My Builds
+            </button>
+        </form>
+    <?php endif; ?>
+</section>
 <?php require 'footer.php'; ?>

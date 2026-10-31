@@ -171,27 +171,73 @@ $catalog = [
 
 $specUpserts = [
     'CPU' => [
-        'sql' => 'INSERT INTO cpu_specs (component_id, socket, cores, threads, base_clock_ghz, boost_clock_ghz, tdp_w) VALUES (?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE socket=VALUES(socket), cores=VALUES(cores), threads=VALUES(threads), base_clock_ghz=VALUES(base_clock_ghz), boost_clock_ghz=VALUES(boost_clock_ghz), tdp_w=VALUES(tdp_w)',
+        'sql' => 'INSERT INTO cpu_specs
+            (component_id, socket, cores, threads, base_clock_ghz, boost_clock_ghz, tdp_w)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            ON DUPLICATE KEY UPDATE
+                socket=VALUES(socket),
+                cores=VALUES(cores),
+                threads=VALUES(threads),
+                base_clock_ghz=VALUES(base_clock_ghz),
+                boost_clock_ghz=VALUES(boost_clock_ghz),
+                tdp_w=VALUES(tdp_w)',
         'types' => 'isiiddi',
     ],
     'GPU' => [
-        'sql' => 'INSERT INTO gpu_specs (component_id, vram_gb, length_mm, tdp_w, power_connectors) VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE vram_gb=VALUES(vram_gb), length_mm=VALUES(length_mm), tdp_w=VALUES(tdp_w), power_connectors=VALUES(power_connectors)',
+        'sql' => 'INSERT INTO gpu_specs
+            (component_id, vram_gb, length_mm, tdp_w, power_connectors)
+            VALUES (?, ?, ?, ?, ?)
+            ON DUPLICATE KEY UPDATE
+                vram_gb=VALUES(vram_gb),
+                length_mm=VALUES(length_mm),
+                tdp_w=VALUES(tdp_w),
+                power_connectors=VALUES(power_connectors)',
         'types' => 'iiiis',
     ],
     'Motherboard' => [
-        'sql' => 'INSERT INTO motherboard_specs (component_id, socket, chipset, form_factor, ram_type, ram_slots, max_ram_gb, m2_slots, sata_ports) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE socket=VALUES(socket), chipset=VALUES(chipset), form_factor=VALUES(form_factor), ram_type=VALUES(ram_type), ram_slots=VALUES(ram_slots), max_ram_gb=VALUES(max_ram_gb), m2_slots=VALUES(m2_slots), sata_ports=VALUES(sata_ports)',
+        'sql' => 'INSERT INTO motherboard_specs
+            (component_id, socket, chipset, form_factor, ram_type, ram_slots, max_ram_gb, m2_slots, sata_ports)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ON DUPLICATE KEY UPDATE
+                socket=VALUES(socket),
+                chipset=VALUES(chipset),
+                form_factor=VALUES(form_factor),
+                ram_type=VALUES(ram_type),
+                ram_slots=VALUES(ram_slots),
+                max_ram_gb=VALUES(max_ram_gb),
+                m2_slots=VALUES(m2_slots),
+                sata_ports=VALUES(sata_ports)',
         'types' => 'issssiiii',
     ],
     'RAM' => [
-        'sql' => 'INSERT INTO ram_specs (component_id, ram_type, capacity_gb, modules, speed_mhz) VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE ram_type=VALUES(ram_type), capacity_gb=VALUES(capacity_gb), modules=VALUES(modules), speed_mhz=VALUES(speed_mhz)',
+        'sql' => 'INSERT INTO ram_specs
+            (component_id, ram_type, capacity_gb, modules, speed_mhz)
+            VALUES (?, ?, ?, ?, ?)
+            ON DUPLICATE KEY UPDATE
+                ram_type=VALUES(ram_type),
+                capacity_gb=VALUES(capacity_gb),
+                modules=VALUES(modules),
+                speed_mhz=VALUES(speed_mhz)',
         'types' => 'isiii',
     ],
     'Storage' => [
-        'sql' => 'INSERT INTO storage_specs (component_id, storage_type, interface, capacity_gb) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE storage_type=VALUES(storage_type), interface=VALUES(interface), capacity_gb=VALUES(capacity_gb)',
+        'sql' => 'INSERT INTO storage_specs
+            (component_id, storage_type, interface, capacity_gb)
+            VALUES (?, ?, ?, ?)
+            ON DUPLICATE KEY UPDATE
+                storage_type=VALUES(storage_type),
+                interface=VALUES(interface),
+                capacity_gb=VALUES(capacity_gb)',
         'types' => 'issi',
     ],
     'PSU' => [
-        'sql' => 'INSERT INTO psu_specs (component_id, wattage, efficiency_rating, modular) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE wattage=VALUES(wattage), efficiency_rating=VALUES(efficiency_rating), modular=VALUES(modular)',
+        'sql' => 'INSERT INTO psu_specs
+            (component_id, wattage, efficiency_rating, modular)
+            VALUES (?, ?, ?, ?)
+            ON DUPLICATE KEY UPDATE
+                wattage=VALUES(wattage),
+                efficiency_rating=VALUES(efficiency_rating),
+                modular=VALUES(modular)',
         'types' => 'iiss',
     ],
 ];

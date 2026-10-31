@@ -1,1 +1,4 @@
-<?php $category='RAM'; require 'category_page.php'; ?>
+<?php
+$category = 'RAM';
+require 'category_page.php';
+?>
