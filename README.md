@@ -1,6 +1,6 @@
-# ⚡ Forge PC Builder
+Forge PC Builder
 
-### Build Your Dream PC. One Component at a Time.
+### Build Your Dream PC.
 
 Forge PC Builder is a dynamic web development project developed as part of the **Dynamic Web Development (DWD) module**. The project focuses on creating an interactive PC building platform where users can explore computer components, customise their own PC builds, and manage their configurations.
 
@@ -12,7 +12,7 @@ The website combines a modern gaming-inspired interface with dynamic functionali
 
 Building a custom PC can be challenging, especially when choosing compatible components within a specific budget.
 
-Forge PC Builder aims to simplify this process by providing a platform where users can:
+### Forge PC Builder aims to simplify this process by providing a platform where users can:
 
 - Browse and explore PC components.
 - View detailed component specifications.
