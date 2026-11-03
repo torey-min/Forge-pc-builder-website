@@ -1,9 +1,6 @@
 <?php
 declare(strict_types=1);
 
-// Demo catalog for the PC Builder coursework.
-// Prices are illustrative EUR values. Verify component specifications against
-// manufacturer pages before using this catalog outside a classroom demo.
 
 $servername = 'MinProject';
 $username = 'root';
