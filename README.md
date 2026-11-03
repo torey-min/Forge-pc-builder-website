@@ -1,6 +1,6 @@
-# ⚡ Forge PC Builder
+Forge PC Builder
 
-### Build Your Dream PC. One Component at a Time.
+### Build Your Dream PC.
 
 Forge PC Builder is a dynamic web development project developed as part of the **Dynamic Web Development (DWD) module**. The project focuses on creating an interactive PC building platform where users can explore computer components, customise their own PC builds, and manage their configurations.
 
@@ -8,11 +8,11 @@ The website combines a modern gaming-inspired interface with dynamic functionali
 
 ---
 
-## 🎮 Project Overview
+## Project Overview
 
 Building a custom PC can be challenging, especially when choosing compatible components within a specific budget.
 
-Forge PC Builder aims to simplify this process by providing a platform where users can:
+### Forge PC Builder aims to simplify this process by providing a platform where users can:
 
 - Browse and explore PC components.
 - View detailed component specifications.
@@ -22,7 +22,7 @@ Forge PC Builder aims to simplify this process by providing a platform where use
 
 The project demonstrates the practical application of front-end development, server-side programming, database integration, and dynamic web functionality.
 
-## ✨ Key Features
+## Key Features
 
 | Feature | Description |
 |---|---|
@@ -55,7 +55,7 @@ The project demonstrates the practical application of front-end development, ser
 - GitHub Codespaces
 - phpMyAdmin
 
-## 🗄️ Database Design
+## Database Design
 
 The project uses an existing relational database structure provided as part of the module requirements.
 
@@ -76,7 +76,7 @@ The database consists of **9 tables**:
 
 The component specification tables are linked to the main `components` table through `component_id`, while user builds are connected through relational database relationships.
 
-## 🎨 Design Concept
+## Design Concept
 
 The website follows a modern gaming-inspired visual identity.
 
@@ -89,7 +89,7 @@ The website follows a modern gaming-inspired visual identity.
 
 The goal is to create an interface that feels familiar to PC enthusiasts while remaining easy to navigate.
 
-## 📂 Project Structure
+## Project Structure
 
 The project is organised around frontend pages, backend functionality, and database integration.
 
@@ -116,7 +116,7 @@ Forge-PC-Builder/
 
 *The structure above is an example and can be updated to reflect the actual repository.*
 
-## 🚀 Getting Started
+## Getting Started
 
 To run the project locally:
 
@@ -142,7 +142,7 @@ To run the project locally:
    http://localhost/Forge-PC-Builder/
    ```
 
-## 🎓 Academic Context
+## Academic Context
 
 **Module:** Dynamic Web Development (DWD)
 
@@ -160,7 +160,7 @@ This project is developed to demonstrate an understanding of dynamic web develop
 - User authentication.
 - Database relationships and queries.
 
-## 📌 Project Status
+## Project Status
 
 <code>In Development</code>
 
@@ -168,7 +168,7 @@ The project is being developed incrementally, with the aim of implementing the c
 
 ---
 
-## 👨‍💻 Developer
+## Developer
 
 **Min Kyaw**
 
