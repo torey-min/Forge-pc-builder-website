@@ -3,21 +3,8 @@ declare(strict_types=1);
 
 session_start();
 
-// Match these values to your WAMP MySQL settings.
-$servername = 'MinProject';
-$dbname = 'pc_builder';
-$username = 'root';
-$password = '';
-
-mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
-
-try {
-    $db = new mysqli($servername, $username, $password, $dbname);
-    $db->set_charset('utf8mb4');
-} catch (Throwable $e) {
-    http_response_code(503);
-    $db_error = 'The PC Builder database is not available. Check that MySQL is running and that the connection settings in config.php match your setup.';
-}
+// Load the shared MySQL connection before defining the site's helper functions.
+require_once __DIR__ . '/db_connect.php';
 
 function e(mixed $value): string
 {

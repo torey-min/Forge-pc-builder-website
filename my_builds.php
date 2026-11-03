@@ -65,6 +65,8 @@ $builds = fetch_rows(
         'i',
         [$buildId]
     );
+    
+    // Total price Calculation -- Min
     $total = array_sum(array_map(
         fn($item) => (float)$item['price'] * (int)$item['quantity'],
         $items

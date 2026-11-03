@@ -38,7 +38,7 @@ require 'header.php';
 <section class="panel formbox">
     <div class="eyebrow">FORGE account</div>
     <h1>Create account</h1>
-    <p>Account details are stored in the existing users table.</p>
+    <p>Account details</p>
 
     <?php if ($error): ?>
         <div class="alert error"><?= e($error) ?></div>
